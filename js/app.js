@@ -16,7 +16,7 @@
  *    + if all cards have matched, display a message with the final score
  */
 
-var clickedCard , moves , rating , locked;
+var clickedCard , moves , rating , locked, timer = new Timer();
 var deck = [
   {
     name: 'fa-diamond',
@@ -113,7 +113,7 @@ function renderDeck() {
 
 function addCardClickListener(card, name) {
      card.addEventListener('click', function(event) {
-         if(!isLocked(name)) {
+         if(!card.classList.contains('open') && !isLocked(name)) {
            showCard(event.target);
            act(name);
          }
@@ -198,7 +198,6 @@ function reduceRating() {
   });
 }
 
-
 function init() {
   document.querySelectorAll('.restart').forEach(function(elem) {
       elem.addEventListener('click', function() {
@@ -219,17 +218,27 @@ function init() {
   document.querySelector('.deck').style.display = 'flex';
   document.querySelector('.over').style.display = 'none';
   renderDeck();
+  startTimer();
 }
 
 function endGame() {
+  document.querySelector('.timeTaken').textContent = timer.getTotalTimeValues().seconds;
+  timer.stop();
   document.querySelector('.deck').style.display = 'none';
   document.querySelector('.moveCount').textContent = moves;
-  document.querySelector('.finalRating').innerHTML = rating;
+  document.querySelector('.finalRating').textContent = rating;
   document.querySelector('.over').style.display = 'block';
  }
 
 
+function startTimer(){
+  timer.reset();
+  timer.start();
+  timer.addEventListener('secondsUpdated', function (e) {
+     document.querySelector('#timer').innerHTML = timer.getTimeValues().toString();
+  });
+}
+
 init();
 
-//endGame();
 
